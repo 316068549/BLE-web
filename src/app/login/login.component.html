@@ -1,0 +1,36 @@
+<div class="container" style="height: 100%" [@fadeIn]>
+  <header class="fn-clear" [@fadeIn] >
+    <h1 class="titleWord">BLE报警管理平台</h1>
+  </header>
+  <div class="body-bg">
+    <img src="../../assets/img/lADPBY0V4s_ba2fNAyrNB1g_1880_810.jpg" alt="">
+  </div>
+
+
+
+  <div class="loginbox">
+    <h5 class="nav-head">密码登录</h5>
+    <form name="form" (ngSubmit)="heroForm.form.valid && login()" #heroForm="ngForm" novalidate>
+
+      <div class="form-group">
+        <!--<label for="name">用户名</label>-->
+        <input type="text" style="display: none;">
+        <input type="password" style="display: none;">
+        <input type="text" autocomplete="off" class="form-control" placeholder="用户名"   [(ngModel)]="user.userName" name="userName" #userName="ngModel" required />
+        <div *ngIf="heroForm.submitted && userName.invalid "  class="alert alert-danger">用户名不能为空</div>
+      </div>
+      <div class="form-group" >
+        <!--<label for="userPassword">密码</label>-->
+        <input type="text" style="display: none;">
+        <input type="password" style="display: none;">
+        <input type="password" autocomplete="off"  class="form-control" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" name="userPassword" #userPassword="ngModel"  required/>
+        <div *ngIf="heroForm.submitted && userPassword.invalid " class="alert alert-danger">密码不能为空</div>
+      </div>
+      <button type="submit" class="btn btn-login" style="width: 100%;" >登录</button>
+    </form>
+  </div>
+  <footer class="txt-center">Copyright &nbsp;&nbsp;©&nbsp;&nbsp; 2009-2017 &nbsp;Anyikang.com&nbsp;&nbsp;&nbsp;&nbsp; ICP证：京B2-20080101 <br>
+    <span>京公网安备 33010002000099号</span></footer>
+</div>
+
+

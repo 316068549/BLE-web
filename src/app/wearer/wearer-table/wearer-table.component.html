@@ -1,0 +1,367 @@
+<div id="page-wrapper" class="animated marg220" [@fadeIn]>
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">人员管理</a>
+    <!--<a  href="javascript:;">用户管理</a>-->
+    <a  routerLinkActive="active" >佩戴者信息管理</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+               <input #searchBox type="text" id="search-box"  class="form-box"
+                      placeholder="请输入设备号">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+  <!--</span>-->
+   </span>
+
+    <!--<button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button" *ngIf="addbtn">+添加设备佩戴者</button>-->
+    <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button" >+添加设备佩戴者</button>
+    <!--<button (click)="addImei()" class="btn-blue btns" type="button" >+添加设备</button>-->
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+      <table class="table table-striped" >
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th >
+            设备号
+          </th>
+          <th>
+            姓名
+          </th>
+          <th>
+            性别
+          </th>
+          <th>
+            年龄
+          </th>
+          <th>
+            电话
+          </th>
+          <th>
+            亲情号
+          </th>
+          <th>
+            地址
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let wearer of wearers; let i = index;"  (click)="onSelect(wearer)">
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{wearer.deviceIMEI}}</td>
+          <td >{{wearer.surname}}{{wearer.name}}</td>
+          <td >{{wearer.sex|sexChange}}</td>
+          <td>{{wearer.age}}</td>
+          <td>{{wearer.phone}}</td>
+          <td><span *ngFor="let familyphone of wearer.familyPhones;let isLast = last">{{familyphone.mobile}}<span [hidden]="isLast">,</span></span></td>
+          <td>{{wearer.address}}</td>
+          <!--<td>&nbsp;&nbsp;-->
+            <!--<a  (click)="deletemenu=true; clicked=true;helper === selectedHelper" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <!--<a (click)="delete(helper); $event.stopPropagation()">删除</a>-->
+          <!--</td>-->
+          <!--<td><a (click)="searchParMenu2(role.roleId);deletemenu=true; clicked=true;role === selectedRole" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <!--<a   (click)="delete(role); $event.stopPropagation()">删除</a></td>-->
+          <!--<td><a *ngIf="edit" (click)="searchParMenu2();deletemenu=true; clicked=true;">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(wearer); $event.stopPropagation()">删除</a></td>-->
+          <td><a  (click)="phonemenu=true; clicked=true;addBox(wearer);">添加修改亲情号</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  (click)="searchParMenu2();deletemenu=true; clicked=true;">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  (click)="delete(wearer); $event.stopPropagation()">删除</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="wearers">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                [disabled]="curPage==totalPage">下一页</button>
+      </div>
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+      没有查询到数据
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" enctype="multipart/form-data" (ngSubmit)="submied = false;tjmenuform.form.valid && add(deviceIMEI.value,wearerName.value,wearerLastName.value,menuSelected.value,age.value,
+        phone.value, address.value,phone1.value,phone2.value,phone3.value,phone4.value,phone5.value);">
+    <div class="operate-title">添加设备佩戴者<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>用户Id:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="number"  id="helperId" name="helperId" class="form-box"  [(ngModel)]="Helpers.userId" #helperId="ngModel">-->
+          <!--<p *ngIf="tjmenuform.submitted && !helperId.valid && !submied"   class="text-danger">用户Id不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>设备号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceIMEI" name="deviceIMEI" class="form-box"  [(ngModel)]="Wearer.deviceIMEI" #deviceIMEI="ngModel">
+          <p *ngIf="tjmenuform.submitted && !deviceIMEI.valid && !submied"   class="text-danger">设备号不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>姓:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="wearerName" name="wearerName" class="form-box"  [(ngModel)]="Wearer.surname" #wearerName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !wearerName.valid && !submied"   class="text-danger">姓不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>名:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="wearerLastName" name="wearerLastName" class="form-box"  [(ngModel)]="Wearer.name" #wearerLastName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !wearerLastName.valid && !submied"   class="text-danger">名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >性别:</label>
+        <div class="operate-radio">
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
+          <input #menuSelected="ngModel"  required (ngModelChange)="menuSelected.valid"  name="open"  [(ngModel)]="Wearer.sex"  type="radio" class="form-box" value="1">  男
+          <input #menuSelected="ngModel"  required  (ngModelChange)="menuSelected.valid" name="open"  [(ngModel)]="Wearer.sex"  type="radio" class="form-box" value="0">  女
+          <p *ngIf="tjmenuform.submitted && !menuSelected.valid && !submied"   class="text-danger">性别为必选项</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>年龄:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="age" name="age" class="form-box"  [(ngModel)]="Wearer.age" #age="ngModel">
+          <p *ngIf="tjmenuform.submitted && !age.valid && !submied"   class="text-danger">年龄不能为空</p>
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label >头像:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="file"  id="imageUrl" name="imageUrl" style="border: none"    (change)="onFileChanged($event.target.files)"-->
+                 <!--accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" #imageUrl>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>电话:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="phone" name="phone" class="form-box"  [(ngModel)]="Wearer.phone" #phone="ngModel"
+                 pattern="^1[3|4|5|7|8][0-9]{9}$">
+          <p *ngIf="tjmenuform.submitted && !phone.value && !submied"   class="text-danger">电话不能为空</p>
+          <p class="text-danger" *ngIf="phone.errors?.pattern && phone.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>地址:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="address" name="address" class="form-box" [(ngModel)]="Wearer.address" #address="ngModel">
+          <p *ngIf="tjmenuform.submitted && !address.valid && !submied"   class="text-danger">地址不能为空</p>
+        </div>
+      </div>
+      <!--亲情号添加-->
+      <div class="operate-item fn-clear">
+        <label>亲情号1:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="phone1" name="phone1" class="form-box"  [(ngModel)]="Wearer.phone1" #phone1="ngModel"
+                 pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+          <p *ngIf="tjmenuform.submitted && !phone1.value && !submied"   class="text-danger">亲情号至少有1个</p>
+          <p class="text-danger" *ngIf="phone1.errors?.pattern && phone1.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+      <label class="unmust">亲情号2:</label>
+      <div class="operate-group">
+        <input   type="text"  id="phone2" name="phone2" class="form-box"  [(ngModel)]="Wearer.phone2" #phone2="ngModel"
+               pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+        <p class="text-danger" *ngIf="phone2.errors?.pattern && phone2.touched && !submied">手机号码格式不正确</p>
+      </div>
+    </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">亲情号3:</label>
+        <div class="operate-group">
+          <input   type="text"  id="phone3" name="phone3" class="form-box"  [(ngModel)]="Wearer.phone3" #phone3="ngModel"
+                 pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+          <p class="text-danger" *ngIf="phone3.errors?.pattern && phone3.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">亲情号4:</label>
+        <div class="operate-group">
+          <input   type="text"  id="phone4" name="phone4" class="form-box"  [(ngModel)]="Wearer.phone4" #phone4="ngModel"
+                 pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+          <p class="text-danger" *ngIf="phone4.errors?.pattern && phone4.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">亲情号5:</label>
+        <div class="operate-group">
+          <input   type="text"  id="phone5" name="phone5" class="form-box"  [(ngModel)]="Wearer.phone5" #phone5="ngModel"
+                 pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+          <p class="text-danger" *ngIf="phone5.errors?.pattern && phone5.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <!--亲情号添加end-->
+
+      <div class="operate-btn">
+        <button type="submit"    id="addWear" class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedWearer">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(oldManId.value,helperName2.value,wearerLastName2.value,
+  menuSelected2.value,age2.value,phoneNumber2.value, address2.value);">
+    <div class="operate-title">修改设备佩戴者<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>设备号:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="deviceIMEI2" name="deviceIMEI2" class="form-box"  [(ngModel)]="selectedWearer.deviceIMEI" #deviceIMEI2="ngModel">-->
+          <!--<p *ngIf="deletemenuform.submitted && !deviceIMEI2.valid"   class="text-danger">设备号不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <input type="hidden" id="usersId" [value]="selectedWearer.oldManId" name="usersId" #oldManId/>
+      <div class="operate-item fn-clear">
+        <label>姓:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="helperName2" name="helperName2" class="form-box"  [(ngModel)]="selectedWearer.surname" #helperName2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !helperName2.valid"   class="text-danger">姓不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>名:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="wearerLastName2" name="wearerLastName2" class="form-box"  [(ngModel)]="selectedWearer.name" #wearerLastName2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !wearerLastName2.valid"   class="text-danger">名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >性别:</label>
+        <div class="operate-radio">
+          <input #menuSelected2   [checked]="selectedWearer.sex==1" (change)="menuSelected2.value=1" required   name="selected"  type="radio" class="form-box" value="1">  男
+          <input #menuSelected2   [checked]="selectedWearer.sex==0" (change)="menuSelected2.value=0" required   name="selected"  type="radio" class="form-box" value="0">  女
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>年龄:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="age2" name="age2" class="form-box"  [(ngModel)]="selectedWearer.age" #age2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !age2.valid"   class="text-danger">年龄不能为空</p>
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">头像Url:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<span class="mr10" [hidden]="imageUrl2.value">{{selectedWearer.imageUrl}}</span><span class="mr10" [hidden]="!imageUrl2.value">{{imageUrl2.value}}</span>-->
+          <!--<input required  type="file"  id="imageUrl2" name="imageUrl2" class="" style="border: none;width: 72px;display: inline-block"  (change)="onFileChanged($event.target.files)"-->
+                 <!--accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"  #imageUrl2>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>电话:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="phoneNumber2" name="phoneNumber2" class="form-box"  [(ngModel)]="selectedWearer.phone" #phoneNumber2="ngModel"
+                 pattern="^1[3|4|5|7|8][0-9]{9}$">
+          <p *ngIf="deletemenuform.submitted && !phoneNumber2.value"   class="text-danger">电话不能为空</p>
+          <p class="text-danger" *ngIf="phoneNumber2.errors?.pattern&& phoneNumber2.touched">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>地址:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="address2" name="address2" class="form-box" [(ngModel)]="selectedWearer.address" #address2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !address2.valid"   class="text-danger">地址不能为空</p>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"  id="saveWear"   class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;cancel()" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!phonemenu"  class="operate menu"  *ngIf="selectedWearer">
+  <form class="operate-form"  #phonemenuform="ngForm">
+    <div class="operate-title">添加修改亲情号<span (click)="clicked=false; phonemenu=false" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <button (click)="addPhoneIn();" class="btn-blue btns mb10" style="margin-left: -7px" type="button" >+添加亲情号</button>
+      <input type="hidden" id="usersId2" [value]="selectedWearer.oldManId" name="usersId2" #oldManId2/>
+
+      <div class="operate-item fn-clear addBox" *ngFor="let familyphone of selectedWearer.familyPhones;let i = index">
+        <label>亲情号{{i+1}}:</label>
+        <div class="operate-group">
+          <input required  type="text"  [id]="'phone'+i" name="{{familyphone.mobile}}" class="form-box wid30 mr15"  [(ngModel)]="familyphone.mobile"
+                 [ngModelOptions]="{standalone: true}"  pattern="^1[3|4|5|7|8|9][0-9]{9}$">
+          <!--<p class="text-danger" style="display: none">手机号码格式不正确</p>-->
+          <button type="button"  *ngIf="!familyphone.selected" (click)="addPhone(oldManId2.value,familyphone.mobile,i)" class="btns btn-blue">确定</button>
+          <button type="button"  *ngIf="familyphone.selected" (click)="editPhone(familyphone.emergency_id,familyphone.mobile,i)" class="btns btn-blue">修改</button>
+          <button type="button"  *ngIf="familyphone.selected" (click)="delPhone(familyphone.emergency_id,oldManId2.value,i)" class="btns btn-blue">删除</button>
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>亲情号1:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="phone1" name="phone1" class="form-box"  [(ngModel)]="Wearer.phone1" #phone1="ngModel"-->
+                 <!--pattern="^1[3|4|5|7|8|9][0-9]{9}$">-->
+          <!--<p *ngIf="tjmenuform.submitted && !phone1.value && !submied"   class="text-danger">亲情号至少有1个</p>-->
+          <!--<p class="text-danger" *ngIf="phone1.errors?.pattern && phone1.touched && !submied">手机号码格式不正确</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">亲情号2:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input   type="text"  id="phone2" name="phone2" class="form-box"  [(ngModel)]="Wearer.phone2" #phone2="ngModel"-->
+                   <!--pattern="^1[3|4|5|7|8|9][0-9]{9}$">-->
+          <!--<p class="text-danger" *ngIf="phone2.errors?.pattern && phone2.touched && !submied">手机号码格式不正确</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">亲情号3:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input   type="text"  id="phone3" name="phone3" class="form-box"  [(ngModel)]="Wearer.phone3" #phone3="ngModel"-->
+                   <!--pattern="^1[3|4|5|7|8|9][0-9]{9}$">-->
+          <!--<p class="text-danger" *ngIf="phone3.errors?.pattern && phone3.touched && !submied">手机号码格式不正确</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">亲情号4:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input   type="text"  id="phone4" name="phone4" class="form-box"  [(ngModel)]="Wearer.phone4" #phone4="ngModel"-->
+                   <!--pattern="^1[3|4|5|7|8|9][0-9]{9}$">-->
+          <!--<p class="text-danger" *ngIf="phone4.errors?.pattern && phone4.touched && !submied">手机号码格式不正确</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">亲情号5:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input   type="text"  id="phone5" name="phone5" class="form-box"  [(ngModel)]="Wearer.phone5" #phone5="ngModel"-->
+                   <!--pattern="^1[3|4|5|7|8|9][0-9]{9}$">-->
+          <!--<p class="text-danger" *ngIf="phone5.errors?.pattern && phone5.touched && !submied">手机号码格式不正确</p>-->
+        <!--</div>-->
+      <!--</div>-->
+    </div>
+  </form>
+</div>

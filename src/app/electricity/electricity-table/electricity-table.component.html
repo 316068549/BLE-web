@@ -1,0 +1,108 @@
+
+  <div class="page-t">
+    <div class="page-nav">
+      <a  href="javascript:;">系统管理</a>
+      <a  href="javascript:;">电量管理</a>
+      <a  routerLinkActive="active" routerLink="/electricity">电量列表</a>
+    </div>
+    <router-outlet></router-outlet>
+    <div class="search-box col-sm-12 mt15">
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input #searchBox type="text" placeholder="请输入设备ID" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary" > 搜索</button> </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="J_mainContent" id="content-main">
+    <div class="wrapper wrapper-content">
+      <!--<track-map></track-map>-->
+      <div class="xt-list xt-list15">
+
+
+        <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+          <thead>
+          <tr>
+            <th >
+              序号
+            </th>
+            <th>
+              <mfDefaultSorter by="deviceIMEI">设备ID</mfDefaultSorter>
+            </th>
+            <th>
+              <mfDefaultSorter by="locationTime">设备时间</mfDefaultSorter>
+            </th>
+            <!--<th>-->
+              <!--<mfDefaultSorter by="locationType">设备类型</mfDefaultSorter>-->
+            <!--</th>-->
+            <th>
+              <mfDefaultSorter by="locationPower">电量(%)</mfDefaultSorter>
+            </th>
+            <th>
+                  操作
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let electricity of mf.data; let i = index;" [class.selected]="electricity === selectedElectricity" (click)="onSelect(electricity)">
+            <td>{{i+1}}</td>
+            <!--<td>{{electricity.locationType}}</td>-->
+            <td >{{electricity.deviceIMEI}}</td>
+            <td >{{electricity.locationTime}}</td>
+            <td>{{electricity.locationPower}}</td>
+            <td>&nbsp;&nbsp;&nbsp;
+              <a [routerLink]="['detail', electricity.deviceIMEI]" >详情</a>&nbsp;&nbsp;&nbsp;&nbsp;
+              <!--<a (click)="delete(electricity); $event.stopPropagation()">删除</a>-->
+            </td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="6">
+              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+
+
+
+
+
+        <!--<table class="table">-->
+          <!--<thead>-->
+          <!--<tr>-->
+            <!--<th>序号</th>-->
+            <!--<th>用户名</th>-->
+            <!--<th>设备ID</th>-->
+            <!--&lt;!&ndash;<th>位置</th>&ndash;&gt;-->
+            <!--<th>电量(%)</th>-->
+            <!--<th>操作</th>-->
+          <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+          <!--&lt;!&ndash;<my-page [info]="result"></my-page>&ndash;&gt;-->
+          <!--<tr *ngFor="let electricity of electricities"-->
+              <!--[class.selected]="electricity === selectedElectricity">-->
+            <!--<td>{{electricity.id}}</td>-->
+            <!--<td>{{electricity.name}}</td>-->
+            <!--&lt;!&ndash;<td>{{user.address}}</td>&ndash;&gt;-->
+            <!--&lt;!&ndash;<td>{{user.phone}}</td>&ndash;&gt;-->
+            <!--<td>{{electricity.equipmentID}}</td>-->
+            <!--&lt;!&ndash;<td>{{electricity.location}}</td>&ndash;&gt;-->
+            <!--<td>{{electricity.elec}}</td>-->
+            <!--<td><a (click)="onSelect(electricity)" [routerLink]="['/electricity-detail', electricity.id]">详情</a></td>-->
+          <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+

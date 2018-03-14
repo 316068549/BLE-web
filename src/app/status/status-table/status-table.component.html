@@ -1,0 +1,96 @@
+<div id="page-wrapper" class="animated marg220">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">设备管理</a>
+    <a  routerLinkActive="active" >设备在线</a>
+  </div>
+  <!--<div class="search-box col-sm-12 mt20">-->
+    <!--<span class="inlined">设备ID：</span>-->
+        <!--<input #searchBox1 type="text" placeholder="请输入设备ID" class="input-sm form-control inlined inputwidth100">-->
+
+      <!--<span class="inlined">手机号：</span>-->
+        <!--<input #searchBox2 type="text" placeholder="请输入手机号" class="input-sm form-control inlined inputwidth100">-->
+    <!--&lt;!&ndash;<span class="laydate">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>开始时间：&ndash;&gt;-->
+        <!--&lt;!&ndash;<input #startTime class="form-box layer-date" id="start" name="start" placeholder="请选择"&ndash;&gt;-->
+               <!--&lt;!&ndash;onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">&ndash;&gt;-->
+      <!--&lt;!&ndash;</span>&ndash;&gt;-->
+         <!--&lt;!&ndash;<span>结束时间：&ndash;&gt;-->
+        <!--&lt;!&ndash;<input #endTime class="form-box layer-date" id="end" name="end" placeholder="请选择"&ndash;&gt;-->
+               <!--&lt;!&ndash;onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">&ndash;&gt;-->
+      <!--&lt;!&ndash;</span>&ndash;&gt;-->
+    <!--&lt;!&ndash;</span>&ndash;&gt;-->
+    <!--<button type="button" class="btn btn-sm btn-primary" (click)="search(searchBox1.value,searchBox2.value,startTime.value,endTime.value)"> 搜索</button>-->
+  <!--</div>-->
+
+
+</div>
+<div class="J_mainContent" id="content-main">
+
+  <div class="wrapper wrapper-content">
+    <div class="btn-group btn-group-justified mt5" role="group" >
+      <div class="btn-group" role="group">
+        <button type="button" [ngClass]="{'btn-primary':onActive,'btn-default':!onActive}" class="btn btn-primary btn-sm circle"  (click)="searchOn()">在线</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" [ngClass]="{'btn-primary':!onActive,'btn-default':onActive}" class="btn btn-default btn-sm circle" (click)="searchOff()">不在线</button>
+      </div>
+    </div>
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+      <table class="table table-striped" >
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            设备ID
+          </th>
+          <th>
+            在线时间
+          </th>
+          <!--<th>-->
+            <!--监护人-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--监护人电话-->
+          <!--</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let status of statuses; let i = index;"  (click)="onSelect(electricity)" >
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{status.deviceIMEI}}</td>
+          <td >{{status.onlineTime}}</td>
+          <!--<td >{{status.name}}</td>-->
+          <!--<td >{{status.mobile}}</td>-->
+        </tr>
+        <tr class="text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+          <td colspan="5" class="no-border">没有查询到数据</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="charts-box">
+        <app-status-chart [data]="initNum"></app-status-chart>
+      </div>
+
+    </div>
+    <div style="position:relative;padding:0 30px;top:0;width:70%">
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="statuses">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                [disabled]="curPage==totalPage">下一页</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,264 @@
+<div id="page-wrapper" class="animated marg220" [@fadeIn]>
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">人员管理</a>
+    <!--<a  href="javascript:;">用户管理</a>-->
+    <a  routerLinkActive="active" >救助队员管理</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+               <input #searchBox type="text" id="search-box"  class="form-box"
+                      placeholder="请输入电话">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+  <!--</span>-->
+   </span>
+
+    <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button" *ngIf="addbtn">+添加用户</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+      <table class="table table-striped" >
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            姓名
+          </th>
+          <th>
+            性别
+          </th>
+          <th>
+            密码
+          </th>
+          <th>
+            身份证号
+          </th>
+          <th>
+            电话
+          </th>
+          <th>
+            人员构成
+          </th>
+          <th>
+            所属救援队
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let helper of helpers; let i = index;"  (click)="onSelect(helper)">
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{helper.name}}</td>
+          <td >{{helper.sex}}</td>
+          <td>{{helper.password}}</td>
+          <td>{{helper.identityCard}}</td>
+          <td>{{helper.mobile}}</td>
+          <td>{{helper.personnelForm}}</td>
+          <td>{{helper.rescueName}}</td>
+          <!--<td>&nbsp;&nbsp;-->
+            <!--<a  (click)="deletemenu=true; clicked=true;helper === selectedHelper" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <!--<a (click)="delete(helper); $event.stopPropagation()">删除</a>-->
+          <!--</td>-->
+          <!--<td><a (click)="searchParMenu2(role.roleId);deletemenu=true; clicked=true;role === selectedRole" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <!--<a   (click)="delete(role); $event.stopPropagation()">删除</a></td>-->
+          <td><a *ngIf="edit" (click)="searchParMenu2();deletemenu=true; clicked=true;">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(helper); $event.stopPropagation()">删除</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="helpers">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                [disabled]="curPage==totalPage">下一页</button>
+      </div>
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+      没有查询到数据
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" enctype="multipart/form-data" (ngSubmit)="submied = false;tjmenuform.form.valid && add(helperName.value,menuSelected.value,password.value,
+        phoneNumber.value, nationalId.value,personnelForm.value,rescueTeam.value,imageUrl.value);">
+    <div class="operate-title">添加救助人员<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>用户Id:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="number"  id="helperId" name="helperId" class="form-box"  [(ngModel)]="Helpers.userId" #helperId="ngModel">-->
+          <!--<p *ngIf="tjmenuform.submitted && !helperId.valid && !submied"   class="text-danger">用户Id不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>姓名:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="helperName" name="helperName" class="form-box"  [(ngModel)]="Helpers.name" #helperName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !helperName.valid && !submied"   class="text-danger">姓名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >性别:</label>
+        <div class="operate-radio">
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
+          <input #menuSelected="ngModel"  required (ngModelChange)="menuSelected.valid"  name="open"  [(ngModel)]="Helpers.sex"  type="radio" class="form-box" value="男">  男
+          <input #menuSelected="ngModel"  required  (ngModelChange)="menuSelected.valid" name="open"  [(ngModel)]="Helpers.sex"  type="radio" class="form-box" value="女">  女
+          <p *ngIf="tjmenuform.submitted && !menuSelected.valid && !submied"   class="text-danger">性别为必选项</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>密码:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="password" name="password" class="form-box"  [(ngModel)]="Helpers.password" #password="ngModel">
+          <p *ngIf="tjmenuform.submitted && !password.valid && !submied"   class="text-danger">密码不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >头像:</label>
+        <div class="operate-group">
+          <input required  type="file"  id="imageUrl" name="imageUrl" style="border: none"    (change)="onFileChanged($event.target.files)"
+                 accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" #imageUrl>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>电话:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="phoneNumber" name="phoneNumber" class="form-box"  [(ngModel)]="Helpers.mobile" #phoneNumber="ngModel"
+                 pattern="^1[3|4|5|7|8][0-9]{9}$">
+          <p *ngIf="tjmenuform.submitted && !phoneNumber.value && !submied"   class="text-danger">电话不能为空</p>
+          <p class="text-danger" *ngIf="phoneNumber.errors?.pattern && phoneNumber.touched && !submied">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>身份证号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="nationalId" name="nationalId" class="form-box" [(ngModel)]="Helpers.identityCard" #nationalId="ngModel"
+                 pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
+          <p *ngIf="tjmenuform.submitted && !nationalId.value && !submied"   class="text-danger">身份证号不能为空</p>
+          <p *ngIf="nationalId.errors?.pattern && nationalId.touched && !submied"  class="text-danger">身份证格式错误</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>人员类型:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="personnelForm" name="personnelForm" class="form-box" [(ngModel)]="Helpers.personnelForm" #personnelForm="ngModel">
+          <p *ngIf="tjmenuform.submitted && !personnelForm.value && !submied"   class="text-danger">人员类型不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >所属救援队：</label>
+        <div class="operate-group">
+          <select #rescueTeam="ngModel" id="rescueTeam" [(ngModel)]="Helpers.rescueTeamId" required name="rescueTeam"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
+          <p *ngIf="tjmenuform.submitted && !rescueTeam.valid && !submied"   class="text-danger">所属救援队不能为空</p>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"   id="addWear"  class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedHelper">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save();">
+    <div class="operate-title">修改救助人员<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>姓名:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="helperName2" name="helperName2" class="form-box"  [(ngModel)]="selectedHelper.name" #helperName2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !helperName2.valid"   class="text-danger">姓名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >性别:</label>
+        <div class="operate-radio">
+          <input #menuSelected2  checked="selected" [(ngModel)]="selectedHelper.sex" required   name="selected"  type="radio" class="form-box" value="男">  男
+          <input #menuSelected2  checked="selected" [(ngModel)]="selectedHelper.sex" required   name="selected"  type="radio" class="form-box" value="女">  女
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>密码:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="password2" name="password2" class="form-box"  [(ngModel)]="selectedHelper.password" #password2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !password2.valid"   class="text-danger">密码不能为空</p>
+          <!--<p class="text-danger sbd" *ngIf="password.errors?.rangeLength">输入字符长度在2-10之间</p>-->
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">头像Url:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="imageUrl2" name="imageUrl2" class="form-box"  [(ngModel)]="selectedHelper.imageUrl" #imageUrl2="ngModel">-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>电话:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="phoneNumber2" name="phoneNumber2" class="form-box"  [(ngModel)]="selectedHelper.mobile" #phoneNumber2="ngModel"
+                 pattern="^1[3|4|5|7|8][0-9]{9}$">
+          <p *ngIf="deletemenuform.submitted && !phoneNumber2.value"   class="text-danger">电话不能为空</p>
+          <p class="text-danger" *ngIf="phoneNumber2.errors?.pattern&& phoneNumber2.touched">手机号码格式不正确</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>身份证号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="nationalId2" name="nationalId2" class="form-box" [(ngModel)]="selectedHelper.identityCard" #nationalId2="ngModel"
+                 pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
+          <p *ngIf="deletemenuform.submitted && !nationalId2.value"   class="text-danger">身份证号不能为空</p>
+          <div *ngIf="nationalId2.errors?.pattern && nationalId2.touched"  class="text-danger">身份证格式错误</div>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>人员类型:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="personnelForm2" name="personnelForm2" class="form-box" [(ngModel)]="selectedHelper.personnelForm" #personnelForm2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !personnelForm2.valid"   class="text-danger">人员类型不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >所属救援队：</label>
+        <div class="operate-group">
+          <select #rescueTeam2="ngModel" id="rescueTeam2" [(ngModel)]="selectedHelper.rescueTeamId" required name="rescueTeam2"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
+          <p *ngIf="deletemenuform.submitted && !rescueTeam2.valid"   class="text-danger">所属救援队不能为空</p>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"   id="saveWear"  class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;cancel()"  type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>

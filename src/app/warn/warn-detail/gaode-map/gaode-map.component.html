@@ -1,0 +1,38 @@
+<div class="search-box col-sm-12 mt10 mb10">
+  <button (click)="goBack()" class="btn btn-sm btn-primary fn-right mr10" >返回</button>
+</div>
+<div id="container" tabindex="0"></div>
+<div id="result" >
+
+</div>
+<table class="table" >
+
+  <tr>
+    <td >
+      设备ID
+    </td>
+    <td>
+      用户名
+    </td>
+    <td>
+      报警时间
+    </td>
+    <td>
+      联系方式
+    </td>
+    <td>
+      位置
+    </td>
+    <td>
+      报警详情
+    </td>
+  </tr>
+  <tr *ngFor="let warn of warnes" >
+  <td >{{warn.deviceIMEI}}</td>
+  <td >{{warn.name}}</td>
+  <td >{{warn.alarmTime}}</td>
+  <td >{{warn.mobile}}</td>
+  <td>{{warn.alarmIocationType}}({{warn.alarmLongitude}},{{warn.alarmLatitude}})</td>
+  <td >{{warn.deviceStatus}}</td>
+  </tr>
+</table>

@@ -1,0 +1,158 @@
+<div id="page-wrapper" class="animated marg220" [@fadeIn]>
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">产品更新</a>
+    <a  routerLinkActive="active" >产品说明</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+
+    <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;" class="btn-blue btns" type="button" *ngIf="addbtn">+添加设备说明书</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <div class="xt-list">
+      <table class="table table-striped" >
+        <thead>
+        <tr>
+          <th>
+            序号
+          </th>
+          <th >
+            说明书
+          </th>
+          <th>
+            版本
+          </th>
+          <th>
+            用于APP
+          </th>
+          <th>
+            更新次数
+          </th>
+          <th>
+            更新时间
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let description of descriptions; let i = index;"  (click)="onSelect(description)">
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{description.manualName}}</td>
+          <td >{{description.manualVersion}}</td>
+          <td >{{description.manualDevice}}</td>
+          <td>{{description.updateTimes}}</td>
+          <td>{{description.createTime|timeChange}}</td>
+          <td><a *ngIf="edit" class="pl15" (click)="searchParMenu2();deletemenu=true; clicked=true;">详情</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a  *ngIf="del" (click)="delete(description); $event.stopPropagation()">删除</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <!--分页组件-->
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+        没有查询到数据
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  id="tjmenu" #tjmenuform="ngForm" enctype="multipart/form-data" (ngSubmit)="submied = false;tjmenuform.form.valid && add(description.value,
+  version.value,product.value,ckeditorContent.value,size.value);">
+    <div class="operate-title">添加产品说明<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+
+      <div class="operate-item fn-clear">
+        <label>说明书名称:</label>
+        <div class="operate-group2">
+          <input required  type="text"  id="description" name="description" class="form-box"  [(ngModel)]="Description.manualName" #description="ngModel">
+          <p *ngIf="tjmenuform.submitted && !description.valid && !submied"   class="text-danger">说明书名称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>版本:</label>
+        <div class="operate-group2">
+          <input required  type="text"  id="version" name="version" class="form-box"  [(ngModel)]="Description.manualVersion" #version="ngModel">
+          <p *ngIf="tjmenuform.submitted && !version.valid && !submied"   class="text-danger">版本号不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>APP类型:</label>
+        <div class="operate-group2">
+          <select #product id="product" required name="product"  class="form-select" >
+            <option value="" selected = "selected" >请选择</option>
+            <option *ngFor="let rescueParent of parentNames" [value]="rescueParent.appId" >{{rescueParent.appName}}</option>
+          </select>
+          <p *ngIf="tjmenuform.submitted && !product.valid && !product.value && !submied"  class="text-danger">用于设备为必选项</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="vlt">内容:</label>
+        <div class="operate-group2 wid696">
+          <ckeditor #ckeditorContent debounce="500" [config]="config">
+          </ckeditor>
+          <!--输入的内容：<br> {{ ckeditorContent.value }}-->
+        </div>
+      </div>
+
+
+      <div class="operate-item fn-clear">
+        <label class="unmust">备注:</label>
+        <div class="operate-group2">
+          <input  type="text"  id="size" name="size" class="form-box"  [(ngModel)]="Description.remark" #size>
+        </div>
+      </div>
+
+      <div class="operate-btn">
+        <button type="submit"    id="addWear" class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedDescription">
+  <form class="operate-form"  #deletemenuform="ngForm" >
+    <div class="operate-title txt-center fz14">{{selectedDescription.manualName}}<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>预览:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="description2" name="description2" class="form-box"  [(ngModel)]="selectedDescription.description" #description2="ngModel">-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <div class="operate-item fn-clear">
+        <label class="vlt unmust">预览:</label>
+        <div class="operate-group2 wid696">
+          <ckeditor [(ngModel)]="selectedDescription.manualInstructions" name="manualInstructions" debounce="500" [config]="config">
+          </ckeditor>
+        </div>
+      </div>
+
+
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">说明书:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<span class="mr10" [hidden]="descriptionUrl2.value">{{selectedDescription.descriptionUrl}}</span><span class="mr10" [hidden]="!descriptionUrl2.value">{{descriptionUrl2.value}}</span>-->
+          <!--<input required  type="file"  id="descriptionUrl2" name="descriptionUrl2" class="" style="border: none;width: 72px;display: inline-block"  (change)="onFileChanged($event.target.files)"-->
+                 <!--accept=""  #descriptionUrl2>-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <!--<div class="operate-btn">-->
+        <!--<button (click)="deletemenu=false; clicked=false;cancel()" type="reset" class="btns btn-gray">取消</button>-->
+      <!--</div>-->
+    </div>
+  </form>
+</div>

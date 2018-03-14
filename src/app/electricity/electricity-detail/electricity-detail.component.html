@@ -1,0 +1,61 @@
+<div class="page-t">
+  <div class="page-nav message-nav">
+    <a  href="javascript:;">设备管理</a>
+    <a  href="javascript:;">电量管理</a>
+    <a  routerLinkActive="active" routerLink="/electricity-detail">电量详情</a>
+  </div>
+  <router-outlet></router-outlet>
+    <div class="search-box col-sm-12 mt10 mb10">
+    <span class="laydate">
+         <span>开始时间：
+        <input #startTime class="form-box layer-date" id="start" name="start" placeholder="请选择"
+               onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+      </span>
+         <span>结束时间：
+        <input #endTime class="form-box layer-date" id="end" name="end" placeholder="请选择"
+               onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+      </span>
+    </span>
+      <button type="button" class="btn btn-sm btn-primary" id="searchit" > 搜索</button>
+      <button (click)="goBack()" class="btn btn-sm btn-primary fn-right" >返回</button>
+    </div>
+
+
+  <!--<span class="xt-search">-->
+               <!--<input #searchBox type="text" id="search-box" (keyup)="search(searchBox.value)"-->
+                      <!--class="form-box" placeholder="请输入设备ID">-->
+        <!--<span>-->
+          <!--<span *ngFor="let electricity of electricities | async"  (click)="gotoDetail(electricity);"-->
+                <!--class="search-result" > {{electricity.equipmentID}}</span>-->
+        <!--</span>-->
+   <!--</span>-->
+
+  <!--<div class="search-box">-->
+  <!--</div>-->
+</div>
+
+<div class="J_mainContent" id="content-main">
+
+  <div class="wrapper wrapper-content">
+    <app-electricity-chart ></app-electricity-chart>
+
+
+    <div>
+      <!--<div ><label>id: </label>{{electricity[0].deviceIMEI}}</div>-->
+
+
+      <br>
+      <!--<table class="table">-->
+        <!--<tr>-->
+          <!--<td style="font-weight: 600;">时间</td>-->
+          <!--<td *ngFor="let elec of electricity;">{{elec.locationTime}}</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+          <!--<td style="font-weight: 600;">电量(%)</td>-->
+          <!--<td *ngFor="let elec of electricity;">{{elec.locationPower}}</td>-->
+        <!--</tr>-->
+      <!--</table>-->
+
+    </div>
+  </div>
+</div>

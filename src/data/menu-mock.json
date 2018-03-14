@@ -1,0 +1,26 @@
+{"menu":
+[
+{"id": 1, "name": "系统管理", "coding": "01", "address": "http://localhost:3000/menu",
+"parentCode": 11, "parentname": "首页", "addTime": "2017-05-05", "selected": "否", "newWindow": "否", "details": "这是第一个菜单的详情"
+},
+{"id": 2, "name": "系统设置", "coding": "02", "address": "http://localhost:3000/menu",
+  "parentCode": 12, "parentname": "系统管理", "addTime": "2017-05-05", "selected": "否", "newWindow": "否",  "details": "这是第一个菜单的详情"
+},
+{"id": 3, "name": "配置界面", "coding": "03", "address": "http://localhost:3000/menu",
+  "parentCode": 13, "parentname": "首页", "addTime": "2017-05-05", "selected": "否", "newWindow": "是",  "details": "这是第一个菜单的详情"},
+{"id": 4, "name": "数据字典", "coding": "04", "address": "http://localhost:3000/menu",
+  "parentCode": 14, "parentname": "字典管理", "addTime": "2017-05-05", "selected": "否", "newWindow": "否",  "details": "这是第一个菜单的详情"},
+{"id": 5, "name": "菜单列表", "coding": "05", "addTime": "2017-05-05", "address": "http://localhost:3000/menu",
+  "parentCode": 15, "parentname": "菜单管理", "selected": "是", "newWindow": "否",  "details": "这是第一个菜单的详情"},
+{"id": 6, "name": "设备状态", "coding": "06", "address": "http://localhost:3000/menu",
+  "parentCode": 16, "parentname": "消息管理", "addTime": "2017-05-05", "selected": "否", "newWindow": "否",  "details": "这是第一个菜单的详情"},
+{"id": 7, "name": "配置界面", "coding": "07", "address": "http://localhost:3000/menu",
+  "parentCode": 13, "parentname": "首页", "selected": "否", "newWindow": "是",  "details": "这是第一个菜单的详情"},
+{"id": 8, "name": "数据字典", "coding": "08", "address": "http://localhost:3000/menu",
+  "parentCode": 14, "parentname": "字典管理", "addTime": "2017-05-05", "selected": "否", "newWindow": "否",  "details": "这是第一个菜单的详情"},
+{"id": 9, "name": "菜单详情", "coding": "09", "address": "http://localhost:3000/menu",
+  "parentCode": 15, "parentname": "菜单管理", "selected": "是", "newWindow": "否",  "details": "这是第一个菜单的详情"},
+{"id": 10, "name": "设备状态", "coding": "10", "address": "http://localhost:3000/menu",
+  "parentCode":16, "parentname": "消息管理", "addTime": "2017-05-05", "selected": "否", "newWindow": "是",  "details": "这是第一个菜单的详情"}
+]
+};

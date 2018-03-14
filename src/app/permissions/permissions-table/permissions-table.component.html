@@ -1,0 +1,213 @@
+<div id="page-wrapper" class="fadeIn animated marg220">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">系统管理</a>
+    <!--<a  href="javascript:;">角色管理</a>-->
+    <a  routerLinkActive="active" routerLink="/permissions">角色管理</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <!--<span class="xt-search">-->
+               <!--<input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"-->
+                      <!--placeholder="请输入用户名">-->
+           <!--<button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>-->
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+        <!--</span>-->
+   <!--</span>-->
+
+    <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加角色</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+
+
+      <table class="table">
+        <thead>
+        <tr>
+          <th >
+            角色ID
+          </th>
+          <th>
+            角色名称
+          </th>
+          <th>
+            用户列表
+          </th>
+          <th>
+            描述
+          </th>
+          <th>
+            创建时间
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let role of roles; let i = index;"  (click)="onSelect(role)">
+          <td>{{role.roleId}}</td>
+          <td >{{role.roleName}}</td>
+          <td ><span *ngFor="let user of role.userListserList;let a = index;let isFirst=first; let isLast=last;">{{user.nickName}}<span [hidden]="isLast">,</span></span>  </td>
+          <td>{{role.roleDescription}}</td>
+          <td>{{role.createTime|timeChange}}</td>
+          <td><a (click)="searchParMenu2(role.roleId);deletemenu=true; clicked=true;role === selectedRole" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a   (click)="delete(role); $event.stopPropagation()">删除</a></td>
+          <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->
+        </tr>
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+      </table>
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="roles">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                [disabled]="curPage==totalPage">下一页</button>
+      </div>
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+        没有查询到数据
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu" id="form1">
+  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="submied = false; tjmenuform.form.valid && add();">
+    <div class="operate-title">添加用户<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>角色名称：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="roleName" name="roleName" class="form-box"  [(ngModel)]="Role.roleName" #roleName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !roleName.valid && !submied"   class="text-danger">角色名称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>备注：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="roleDescription" name="roleDescription" class="form-box"  [(ngModel)]="Role.roleDescription" #roleDescription="ngModel">
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >权限：</label>
+        <div class="operate-group">
+          <table  lay-skin="line" style="width:500px;">
+            <div *ngFor="let menu of menus;let i=index;">
+              <thead >
+              <tr>
+                <th colspan="2" style="text-align:left;height: 20px">
+                  <input type="checkbox"  name="'status'+{{menu.permissionId}}"    (change)="ak(menu.selected,'status'+menu.permissionId,menu.permissionId)"
+                         [value]="menu.permissionId" [checked]="menu.selected"/>{{menu.permissionName}}
+                </th>
+              </tr>
+              </thead>
+              <tbody  >
+              <tr *ngFor="let subMenu of menu.subAdminPermission;let a=index" >
+                <td style="text-align:left;width:150px;height: 20px">
+                  <input type="checkbox" name="'subMenu_'+{{subMenu.permissionParentId}}"   (change)="ak2(subMenu.selected,'subMenu_'+subMenu.permissionParentId,subMenu.permissionId,subMenu.permissionParentId)"
+                         [value]="subMenu.permissionId" [checked]="subMenu.selected"  >{{subMenu.permissionName}}
+                </td>
+                <td style="text-align:left;width:350px;height: 20px" >
+                <span *ngFor="let buttonMenu of subMenu.subAdminPermission;">
+                  <input type="checkbox"  name="'buttonMenu_'+{{subMenu.permissionParentId}}+'_'+{{buttonMenu.permissionParentId}}"   (change)="ak3(buttonMenu.selected,'buttonMenu_'+subMenu.permissionParentId+'_'+buttonMenu.permissionParentId,buttonMenu.permissionId)"
+                         [value]="buttonMenu.permissionId" [checked]="buttonMenu.selected"  >{{buttonMenu.permissionName}}
+                </span>
+
+                </td>
+              </tr>
+              </tbody>
+            </div>
+
+          </table>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"  class="btns btn-blue" id="saveRole">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedRole">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(roleId.value,roleName2.value,roleDescription2.value);">
+    <div class="operate-title">修改用户<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<input type="hidden" id="originalRoleId" [value]="selectedUser.roleList[0].roleId" name="originalRoleId" #originalRoleId/>-->
+     <input type="hidden" id="roleId" [value]="selectedRole.roleId" name="roleId" #roleId/>
+      <div class="operate-item fn-clear">
+        <label>角色名称：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="roleName2" name="roleName2" class="form-box"  [(ngModel)]="selectedRole.roleName" #roleName2="ngModel">
+          <p *ngIf="tjmenuform.submitted && !roleName2.valid"   class="text-danger">角色名称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>备注：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="roleDescription2" name="roleDescription2" class="form-box"  [(ngModel)]="selectedRole.roleDescription" #roleDescription2="ngModel">
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >权限：</label>
+        <div class="operate-group">
+          <table  lay-skin="line" style="width:500px;">
+            <div *ngFor="let menu of menus;let i=index;">
+              <thead >
+              <tr>
+                <th colspan="2" style="text-align:left;height: 20px">
+                  <input type="checkbox"  name="'status'+{{menu.permissionId}}"    (change)="ak(menu.selected,'status'+menu.permissionId,menu.permissionId)"
+                         [value]="menu.permissionId" [checked]="menu.selected" />{{menu.permissionName}}
+                </th>
+              </tr>
+              </thead>
+              <tbody  >
+              <tr *ngFor="let subMenu of menu.subAdminPermission;let a=index" >
+                <td style="text-align:left;width:150px;height: 20px">
+                  <input type="checkbox" name="'subMenu_'+{{subMenu.permissionParentId}}"   (change)="ak2(subMenu.selected,'subMenu_'+subMenu.permissionParentId,subMenu.permissionId,subMenu.permissionParentId)"
+                         [value]="subMenu.permissionId" [checked]="subMenu.selected" >{{subMenu.permissionName}}
+                </td>
+                <td style="text-align:left;width:350px;height: 20px" >
+                <span *ngFor="let buttonMenu of subMenu.subAdminPermission;">
+                  <input type="checkbox"  name="'buttonMenu_'+{{subMenu.permissionParentId}}+'_'+{{buttonMenu.permissionParentId}}"   (change)="ak3(buttonMenu.selected,'buttonMenu_'+subMenu.permissionParentId+'_'+buttonMenu.permissionParentId,buttonMenu.permissionId)"
+                         [value]="buttonMenu.permissionId" [checked]="buttonMenu.selected" >{{buttonMenu.permissionName}}
+                </span>
+
+                </td>
+              </tr>
+              </tbody>
+            </div>
+
+          </table>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;cancel()" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>

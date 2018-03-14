@@ -1,0 +1,15 @@
+.navbar-static-side {
+  position: fixed;
+  width: 220px;
+  /*height: 100%;*/
+  top: 40px;
+  /*bottom: 58px;*/
+  bottom: 0;
+}
+#side-menu .active{
+border-left: 4px solid #00c1de;
+}
+#side-menu .active>a{
+color: #a7b1c2 !important;
+background: #474747 !important;
+}

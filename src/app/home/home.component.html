@@ -1,0 +1,29 @@
+<header class="fn-clear" [@fadeIn] >
+  <h1 class="titleWord">BLE报警管理平台</h1>
+  <div class="switch" >
+    <span class="mr30">您好，{{userName}}</span>
+    <a class="mr15" [routerLink]="ad==0?'monitorCenter':'monitor'" [hidden]="currentRoleId=='3'" href="javascript:;">
+      <span class="glyphicon glyphicon-home green-home pr8"></span>首页
+    </a>
+    <a class="mr30" href="javascript:;" (click)="logout()">
+      <span class="glyphicon glyphicon-off red-logout pr8"></span>退出
+    </a>
+    <!--<span >模式切换：</span>-->
+    <!--<a  routerLink="track/121"   href="javascript:;" [ngClass]="{'active':!clicke}" (click)="clicke=!clicke">查询模式</a>-->
+    <!--<i></i>-->
+    <!--<a  routerLink="monitor"  href="javascript:;" [ngClass]="{'active':clicke}" (click)="clicke=!clicke">监控模式</a>-->
+  </div>
+</header>
+
+
+<div id="wrapper">
+  <app-left-nav [url]='clicke' (change)="countChange($event)"></app-left-nav>
+  <div  class="gray-bg dashbard-1 height100">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<!--<footer class="txt-center">© 2009-2017 Anyikang.com 版权所有 ICP证：京B2-20080101<br>-->
+<!--<span>京公网安备 33010002000099号</span></footer>-->
+<footer class="txt-right pr20">© 2009-2017 Anyikang.com 版权所有
+ </footer>
+

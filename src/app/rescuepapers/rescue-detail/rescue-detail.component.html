@@ -1,0 +1,143 @@
+<div id="page-wrapper" class="animated marg220">
+  <div class="page-t">
+    <div class="page-nav">
+      <a  href="javascript:;">救援管理</a>
+      <a  href="javascript:;">救助报告</a>
+      <a  routerLinkActive="active" >图片和视频</a>
+    </div>
+    <router-outlet></router-outlet>
+    <div class="search-box col-sm-12 mt10 mb10">
+      <button (click)="goBack()" class="btn btn-sm btn-primary fn-right" >返回</button>
+    </div>
+
+  </div>
+  <div class="J_mainContent" id="content-main">
+    <div class="wrapper wrapper-content">
+      <!--<track-map></track-map>-->
+      <div class="xt-list">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5>图片 <small>列表</small></h5>
+                <!--<div class="ibox-tools">-->
+                  <!--<a class="collapse-link">-->
+                    <!--<i class="fa fa-chevron-up"></i>-->
+                  <!--</a>-->
+                  <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->
+                    <!--<i class="fa fa-wrench"></i>-->
+                  <!--</a>-->
+                  <!--<ul class="dropdown-menu dropdown-user">-->
+                    <!--<li><a href="basic_gallery.html#">选项1</a>-->
+                    <!--</li>-->
+                    <!--<li><a href="basic_gallery.html#">选项2</a>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                  <!--<a class="close-link">-->
+                    <!--<i class="fa fa-times"></i>-->
+                  <!--</a>-->
+                <!--</div>-->
+              </div>
+              <div class="ibox-content" *ngIf="code&&imageList.length==0">
+                没有图片
+              </div>
+              <div class="ibox-content" *ngIf="code&&imageList.length>0">
+                <a class="fancybox" href="javascript:;" title="" *ngFor="let image of imageList;let i =index">
+                  <img alt="image" [src]="'http://47.95.218.144:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" />
+                </a>
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a> <a class="fancybox" href="#" title="图片1">-->
+                  <!--<img alt="image" src="../../../assets/img/login-background.jpg" />-->
+                <!--</a>-->
+                <!--<a class="fancybox" href="#" title="图片2">-->
+                  <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
+                <!--</a>-->
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!--视频-->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5>视频播放</h5>
+                <!--<div class="ibox-tools">-->
+                  <!--<a class="collapse-link">-->
+                    <!--<i class="fa fa-chevron-up"></i>-->
+                  <!--</a>-->
+                  <!--<a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">-->
+                    <!--<i class="fa fa-wrench"></i>-->
+                  <!--</a>-->
+                  <!--<ul class="dropdown-menu dropdown-user">-->
+                    <!--<li><a href="form_basic.html#">选项1</a>-->
+                    <!--</li>-->
+                    <!--<li><a href="form_basic.html#">选项2</a>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                  <!--<a class="close-link">-->
+                    <!--<i class="fa fa-times"></i>-->
+                  <!--</a>-->
+                <!--</div>-->
+              </div>
+              <div class="ibox-content" [hidden]="code&&videoList.length>0">
+                没有视频
+              </div>
+              <div class="ibox-content" [hidden]="code&&videoList.length==0">
+                <div class="player" *ngFor="let video of videoList; let i = index;">
+                  <span class="loading"></span>
+                  <video id="my-video{{i}}" class="video-js" controls preload="auto" width="640" height="264" (canplaythrough)="hideLoad(i)"  (load)="setVideo($event.target,i)" (play)="hideLoad(i)"
+                  poster="" >
+                    <!--poster="../../../assets/img/fancybox_loading.gif" > -->
+                  <source [src]="'http://47.95.218.144:9005/web/file/downloadFile/'+video.videoUrl"    type="video/mp4">
+                  <p class="vjs-no-js">
+                  您的浏览器不支持HTML5视频播放，请下载或更换浏览器
+                  <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                  </p>
+                  </video>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+

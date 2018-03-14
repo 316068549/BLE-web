@@ -1,0 +1,102 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="nav-close">
+    <i class="fa fa-times-circle"></i>
+  </div>
+  <div class="sidebar-collapse">
+    <ul class="nav pt20" id="side-menu" >
+      <!--<li class="nav-header">-->
+        <!--<div class="dropdown profile-element">-->
+          <!--&lt;!&ndash;<span><img class="img-circle" src="../assets/img/profile_small.jpg" alt=""></span>&ndash;&gt;-->
+          <!--<a data-toggle="dropdown" class="dropdown-toggle" href="javascript:;">-->
+                  <!--<span class="clear">-->
+                  <!--<span class="block m-t-xs ml10">-->
+                  <!--<strong>{{userName}}<b class="caret"></b></strong>-->
+
+                  <!--</span>-->
+                  <!--<span class="text-muted text-xs block">-->
+                    <!--{{roleName}}-->
+
+                  <!--</span>-->
+                  <!--</span>-->
+          <!--</a>-->
+          <!--<ul class="dropdown-menu animated fadeInRight m-t-xs">-->
+            <!--<li>-->
+              <!--<a href="#" (click)="logout()" class="J_menuItem" data-index="2">安全退出</a>-->
+            <!--</li>-->
+          <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="logo-element">跌倒报警2.0</div>-->
+      <!--</li>-->
+
+      <!--<li class="item" routerLinkActive="active" (click)="searvh('monitor')">-->
+        <!--<a routerLink="monitor">-->
+          <!--<i class="fa fa-home"></i>-->
+          <!--<span class="nav-label"  data-index="1">首页</span>-->
+        <!--</a>-->
+      <!--</li>-->
+
+      <li class="item actives"   *ngFor="let menu of menus; let i = index;" [ngClass]="{'actives':!menu.selected,'active':(ad==0&&i==0&&menuactive2)}" [ngSwitch]="menu.permissionId"
+           [routerLinkActive]="menu.permissionId!=4?'':'active'">
+       <!--<a *ngIf="i>2">-->
+          <template [ngSwitchCase]="4" >
+            <a [routerLink]="ad==0?'monitorCenter':'monitor'" (click)="searvh('monitor')">
+            <i class="fa fa-home fz16"></i>
+            <span class="nav-label"  data-index="1">{{menu.permissionName}}</span>
+            </a>
+          </template>
+          <template ngSwitchDefault>
+            <a >
+              <i class="fa" [ngClass]="{'fa-gear':(i==0),'xitong_mag':(menu.permissionUrl=='system'),'person_mag':(menu.permissionUrl=='helpers'),
+              'jiuyuan_mag':(menu.permissionUrl=='rescuecount'),'shebei_mag':(menu.permissionUrl=='device'),'chanpin_mag':(menu.permissionUrl=='product'),'glyphicon glyphicon-th-list':(menu.permissionUrl=='pay')}"></i>
+              <span class="nav-label">{{menu.permissionName}}</span>
+              <span class="fa arrow" (click)="menu.selected=!menu.selected" ></span>
+            </a>
+            <!--<ul class="nav nav-second-level" *ngIf="i>2" [ngClass]="{'collapse in':menuactive}" >-->
+            <ul class="nav nav-second-level"  [ngClass]="{'collapse in':menu.selected}" >
+              <li routerLinkActive="active" *ngFor="let menu2 of menu.subAdminPermission " (click)="searvh(menu2.permissionUrl)">
+                <a  [routerLink]="[menu2.permissionUrl, menu2.permissionId]"    class="J_menuItem"  data-index="3" >{{menu2.permissionName}}</a>
+              </li>
+            </ul>
+          </template>
+      </li>
+
+      <!--<li class="item actives" >-->
+        <!--<a>-->
+          <!--<i class="fa fa-columns"></i>-->
+          <!--<span class="nav-label">产品管理</span>-->
+          <!--<span class="fa arrow"></span>-->
+        <!--</a>-->
+        <ul class="nav nav-second-level">
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="services" class="J_menuItem" data-index="8">用户管理</a>-->
+          <!--</li>-->
+          <li routerLinkActive="active">
+            <a routerLink="pay/12" class="J_menuItem" data-index="9">缴费状态</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="wearer/112" class="J_menuItem" data-index="9">缴费记录</a>
+          </li>
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="wearer/112" class="J_menuItem" data-index="9">佩戴者管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="product" class="J_menuItem" data-index="10">软件更新</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="description" class="J_menuItem" data-index="11">产品说明</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="services" class="J_menuItem" data-index="12">服务协议</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="monitorCenter" class="J_menuItem" data-index="12">首页2</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="monitor" class="J_menuItem" data-index="12">首页</a>-->
+          <!--</li>-->
+        </ul>
+      <!--</li>-->
+
+    </ul>
+  </div>
+</nav>

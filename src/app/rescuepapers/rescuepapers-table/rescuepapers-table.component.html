@@ -1,0 +1,114 @@
+<div id="page-wrapper" class="animated marg220">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">报警管理</a>
+    <a  routerLinkActive="active" >报警记录</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+                <!--<select #searchBox id="rescueTeam" required name="rescueTeam"  class="form-select" >-->
+            <!--<option value="" selected = "selected">所有救援队</option>-->
+            <!--<option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId" [selected]="rescue.rescueTeamId==rescueId">{{rescue.name}}</option>-->
+          <!--</select>-->
+      <input #searchBox type="text" id="search-box"  class="form-box" placeholder="请输入设备号">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+        <!--</span>-->
+   </span>
+    <!--<button (click)="tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加设备</button>-->
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            设备号
+          </th>
+          <th>
+            设备使用者
+          </th>
+          <th>
+            设备报警时间
+          </th>
+          <th>
+            报警地点
+          </th>
+          <th>
+            报警原因
+          </th>
+          <th>
+            救援状态
+          </th>
+          <!--<th>-->
+            <!--救援人-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--完成时间-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--所属救援大队-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--救援结果-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--备注-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--图片和视频-->
+          <!--</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let rescue of rescuePapers; let i = index;"  (click)="onSelect(rescue)">
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{rescue.deviceIMEI}}</td>
+          <td >{{rescue.name}}</td>
+          <td >{{rescue.alarm_time|timeChange}}</td>
+          <td>{{rescue.alarmAddress}}</td>
+          <td>{{rescue.alarm}}</td>
+          <td>{{rescue.rescueStatus}}</td>
+          <!--<td>{{rescue.receiveTime|timeChange}}</td>-->
+          <!--<td>{{rescue.rescueTeam}}</td>-->
+          <!--<td>{{rescue.dealResult}}</td>-->
+          <!--<td>{{rescue.remark}}</td>-->
+          <!--<td>&nbsp;&nbsp;-->
+            <!--<a  (click)="gotoDetail(rescue)" >查看</a>&nbsp;&nbsp;-->
+
+          <!--</td>-->
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <!--分页组件-->
+    <div class="col-md-12 text-right margin-bottom mt25" *ngIf="rescuePapers">
+      <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+      <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+              [disabled]="curPage==1">上一页</button>
+      <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+              (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+        {{x.pageNum}}
+      </button>
+      <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+              [disabled]="curPage==totalPage">下一页</button>
+    </div>
+    <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+      没有查询到数据
+    </div>
+  </div>
+</div>
+</div>
+

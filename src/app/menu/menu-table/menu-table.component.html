@@ -1,0 +1,283 @@
+<div id="page-wrapper" class="animated marg220">
+  <div class="page-t">
+    <div class="page-nav">
+      <a  href="javascript:;">系统管理</a>
+      <a  href="javascript:;">菜单管理</a>
+      <a  routerLinkActive="active" routerLink="/menu">菜单列表</a>
+    </div>
+    <router-outlet></router-outlet>
+    <div class="search-box">
+      <menu-search  [data]='voted' (change)="countChange($event)" ></menu-search>
+
+      <button (click)="searchParMenu();tjmenu=true; clicked=true;tjmenuform.reset();" class="fn-left btn-blue btns search_btn" type="button" *ngIf="addbtn">+添加菜单</button>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <!--<span class="laydate">-->
+         <!--<span>开始时间：-->
+        <!--<input class="form-box layer-date" placeholder="YYYY-MM-DD hh:mm:ss"-->
+               <!--onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">-->
+      <!--</span>-->
+
+         <!--<span>结束时间：-->
+        <!--<input class="form-box layer-date" placeholder="YYYY-MM-DD hh:mm:ss"-->
+               <!--onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">-->
+      <!--</span>-->
+    <!--</span>-->
+  <div class="J_mainContent" id="content-main">
+    <div id="example">
+    </div>
+    <div class="wrapper wrapper-content">
+      <div class="xt-list">
+
+        <table class="table table-striped" >
+          <thead>
+          <tr>
+
+            <th >
+              菜单ID
+            </th>
+            <th >
+              菜单名称
+            </th>
+            <th>
+              资源URL
+            </th>
+            <th>
+              权限控制
+            </th>
+            <th>
+              资源说明
+            </th>
+            <th>
+              资源类型
+            </th>
+            <th>
+              父ID
+            </th>
+            <th>
+              创建时间
+            </th>
+            <th>
+
+            </th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let menu of menus;let i = index;"  [ngClass]="menu.ak?menu.ak:''"  (click)="onSelect(menu)">
+            <td>{{menu.permissionId}}</td>
+            <td>{{menu.permissionName}}</td>
+            <td class="text-right">{{menu.permissionUrl}}</td>
+            <td>{{menu.permissionResource}}</td>
+            <td>{{menu.permissionDescription}}</td>
+            <td>{{menu.permissionTypeId}}</td>
+            <td>{{menu.permissionParentId}}</td>
+            <td>{{menu.createTime|timeChange}}</td>
+            <td><a  (click)="openClose(menu.permissionId,wordControl,i+1);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >展开</a>
+              <a  (click)="openClose2(menu.permissionId,wordControl,i+1,menu.permissionId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1&&(menu.subAdminPermission.length>0)" >展开</a>
+              <a (click)="Close(menu.permissionId,wordControl,i+1,menu.permissionParentId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >折叠</a>
+              <a (click)="Close2(menu.permissionId,wordControl,i+1,menu.permissionId);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1&&(menu.subAdminPermission.length>0)" >折叠</a>
+            </td>
+            <td><a (click)="searchParMenu2(menu.permissionId);deletemenu=true; clicked=true;menu === selectedMenu" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+              <a   (click)="delete(menu); $event.stopPropagation()">删除</a></td>
+            <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="position:relative;padding:0 30px;top:0">
+        <!--分页组件-->
+        <div class="col-md-12 text-right margin-bottom mt25" *ngIf="menus&&!isSearch">
+          <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+          <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                  [disabled]="curPage==1">上一页</button>
+          <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                  (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+            {{x.pageNum}}
+          </button>
+          <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                  [disabled]="curPage==totalPage">下一页</button>
+        </div>
+        <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+          没有查询到数据
+        </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="tjmenuform.form.valid && add(ids.value,parentName.value, subName.value, permissionResource.value,Menu.permissionUrl,Menu.permissionTypeId, menuDetails.value);">
+    <div class="operate-title">添加菜单<span (click)="searchParMenu();clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>资源名称:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="ids" name="ids" class="form-box"  [(ngModel)]="Menu.permissionName" #ids="ngModel">
+          <!--<p [hidden]="ids.pristine || ids.valid"  class="text-danger">菜单名称不能为空</p>-->
+          <p *ngIf="tjmenuform.submitted && !ids.valid && !submied"   class="text-danger">菜单名称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">父菜单：</label>
+        <div class="operate-group">
+          <select #parentName id="parentName" required name="parentName"   class="form-select" (change)="setInfo(parentName.value)">
+            <option value="1" selected = "selected">顶级菜单</option>
+            <option  *ngFor="let c of comIdList" [value]="c.permissionId" >{{c.permissionName}}</option>
+          </select>
+
+          <!--<p *ngIf="tjmenuform.submitted && !menuParentName.valid && !menuParentName.value"  class="text-danger">父菜单为必选项</p>-->
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">子菜单：</label>
+        <div class="operate-group">
+          <select #subName id="subName" required name="subName"  class="form-select" (change)="setInfo2(subName.value)">
+            <option value="-1" selected = "selected"  >请选择</option>
+            <option value="-1" selected = "selected" *ngIf="parentName.value==1||!parentName.value">无</option>
+            <option *ngFor="let c of comIdList2" [value]="c.permissionId" >{{c.permissionName}}</option>
+          </select>
+          <!--<p *ngIf="tjmenuform.submitted && !menuParentName.valid && !menuParentName.value"  class="text-danger">父菜单为必选项</p>-->
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+      <!--<label>名称:</label>-->
+      <!--<div class="operate-group">-->
+      <!--<input required  type="text"  id="name" name="name" class="form-box" [rangeLength]="[2, 10]" [(ngModel)]="Menu.menuTitle" #name="ngModel">-->
+      <!--<p [hidden]="name.pristine || name.valid"  class="text-danger">用户名不能为空</p>-->
+      <!--<p class="text-danger sbd" *ngIf="name.errors?.rangeLength">输入字符长度在2-10之间</p>-->
+      <!--</div>-->
+      <!--</div>-->
+
+      <div class="operate-item fn-clear">
+        <label class="unmust" >资源URL:</label>
+        <div class="operate-group" [hidden]="subName.value!=-1">
+          <input required id="address"  [(ngModel)]="Menu.permissionUrl" name="address"  type="text"   class="form-box" >
+        </div>
+        <div class="operate-radio" [hidden]="subName.value==-1">
+          <input [(ngModel)]="Menu.permissionUrl"  required     name="address3"  type="radio" class="form-box" value="add">  新增
+          <input [(ngModel)]="Menu.permissionUrl"   required    name="address3"  type="radio" class="form-box" value="edit">  修改
+          <input [(ngModel)]="Menu.permissionUrl"  required   name="address3"  type="radio" class="form-box" value="del">  删除
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>权限控制:</label>
+        <div class="operate-group">
+          <input required   type="text"  id="permissionResource" name="permissionResource" class="form-box"  [(ngModel)]="Menu.permissionResource" #permissionResource="ngModel">
+          <!--<p [hidden]="permissionResource.pristine || permissionResource.valid"  class="text-danger sbd">编号不能为空</p>-->
+          <p *ngIf="tjmenuform.submitted && !permissionResource.valid && !submied"   class="text-danger">权限控制不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">资源类型:</label>
+        <div class="operate-radio">
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs"   type="radio" value="男"  required> 男-->
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs"   type="radio" value="女"  required> 女-->
+          <input [(ngModel)]="Menu.permissionTypeId"  [checked]="!Menu.permissionTypeId" ng-control="options" (click)="subName.value=-1"  name="options"  type="radio" class="form-box" [value]="1">  功能
+          <input [(ngModel)]="Menu.permissionTypeId"  [checked]="Menu.permissionTypeId==2" ng-control="options"  name="options"  type="radio" class="form-box" [value]="2">  按钮
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">资源说明:</label>
+        <div class="operate-group">
+          <textarea #menuDetails  name="details" id="details" class="form-box"></textarea>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedMenu">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(selectedMenu.permissionId,selectedMenu.permissionName
+  ,parentName2.value, subName2.value, permissionResource2.value,selectedMenu.permissionUrl,selectedMenu.permissionTypeId, menuDetails2.value
+  );">
+    <div class="operate-title">修改菜单<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>资源名称:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="ids2" name="ids2" class="form-box"  [(ngModel)]="selectedMenu.permissionName" #ids2="ngModel">
+          <!--<p [hidden]="ids2.pristine || ids2.valid"  class="text-danger">资源名称不能为空</p> [hidden]="!selectedMenu.parentPermission" -->
+          <p *ngIf="deletemenuform.submitted && ids2.valid"   class="text-danger">菜单名称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">父菜单：</label>
+        <div class="operate-group">
+          <select #parentName2 id="parentName2"  [(ngModel)]="!selectedMenu.parentPermission?selectedMenu.permissionParentId:selectedMenu.parentPermission" required name="parentName2"   class="form-select" (change)="setInfo(parentName2.value)">
+            <option value="1" selected = "selected">顶级菜单</option>
+            <option  *ngFor="let c of comIdList" [value]="c.permissionId" >{{c.permissionName}}</option>
+          </select>
+          <!--<select #parentName2 id="parentName2" [hidden]="selectedMenu.parentPermission"  [(ngModel)]="selectedMenu.permissionParentId" required name="parentName2"   class="form-select" (change)="setInfo(selectedMenu.permissionParentId)">-->
+            <!--<option value="1" selected = "selected">顶级菜单</option>-->
+            <!--<option  *ngFor="let c of comIdList" [value]="c.permissionId" >{{c.permissionName}}</option>-->
+          <!--</select>-->
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">子菜单：</label>
+        <div class="operate-group">
+          <select #subName2 id="subName2"  required name="subName3" [(ngModel)]="(selectedMenu.permissionTypeId==2)?selectedMenu.permissionParentId:selectedMenu.permissionSubId" class="form-select" (change)="setInfo22(subName2.value);">
+            <option value="-1" selected = "selected" >无</option>
+            <option *ngFor="let c of comIdList2" [value]="c.permissionId" >{{c.permissionName}}</option>
+          </select>
+          <!--<select #subName2 id="subName2" [hidden]="selectedMenu.permissionTypeId==2" [hidden]="selectedMenu.permissionTypeId!=2" required name="subName2" [(ngModel)]="selectedMenu.permissionParentId" class="form-select" (change)="setInfo22(subName2.value);">-->
+            <!--<option value="-1" selected = "selected" >无</option>-->
+            <!--<option *ngFor="let c of comIdList2" [value]="c.permissionId" >{{c.permissionName}}</option>-->
+          <!--</select>-->
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust" >资源URL:</label>
+        <div class="operate-group" >
+          <input required id="address2" [hidden]="selectedMenu.permissionTypeId==2" [(ngModel)]="selectedMenu.permissionUrl" name="address3"  type="text"   class="form-box"  #address2>
+        </div>
+        <div class="operate-radio" [hidden]="selectedMenu.permissionTypeId!=2"
+             >
+          <input   required   [(ngModel)]="selectedMenu.permissionUrl" name="address2"  type="radio" class="form-box" value="add">  新增
+          <input    required  [(ngModel)]="selectedMenu.permissionUrl" name="address2"  type="radio" class="form-box" value="edit">  修改
+          <input   required   [(ngModel)]="selectedMenu.permissionUrl" name="address2"  type="radio" class="form-box" value="del">  删除
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>权限控制:</label>
+        <div class="operate-group">
+          <input required   type="text"  id="permissionResource2" name="permissionResource2" class="form-box"  [(ngModel)]="selectedMenu.permissionResource" #permissionResource2="ngModel">
+          <!--<p [hidden]="permissionResource2.pristine || permissionResource2.valid"  class="text-danger sbd">编号不能为空</p>-->
+          <p *ngIf="deletemenuform.submitted && ids2.valid"   class="text-danger">菜单名称不能为空</p>
+        </div>
+      </div>
+
+
+      <div class="operate-item fn-clear">
+        <label class="unmust">资源类型:</label>
+        <div class="operate-radio">
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
+          <input  required [(ngModel)]="selectedMenu.permissionTypeId"  [checked]="!Menu.permissionTypeId" ng-control="options" (click)="subName.value=-1" name="permissionTypeId"  type="radio" class="form-box" [value]="1">  功能
+          <input   required [(ngModel)]="selectedMenu.permissionTypeId"  [checked]="Menu.permissionTypeId==2" ng-control="options" name="permissionTypeId"  type="radio" class="form-box" [value]="2">  按钮
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label class="unmust">资源说明:</label>
+        <div class="operate-group">
+          <textarea #menuDetails2  name="details" [(ngModel)]="selectedMenu.permissionDescription" id="menuDetails2" class="form-box"></textarea>
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;cancel()" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>

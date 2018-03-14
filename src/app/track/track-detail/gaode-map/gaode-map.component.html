@@ -1,0 +1,16 @@
+<div class="search-box col-sm-12 mt10 mb10">
+    <span class="laydate">
+         <span>开始时间：
+        <input #startTime class="form-box layer-date" id="start" name="start" placeholder="请选择"
+               onclick="laydate({elem: '#start',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+      </span>
+         <span>结束时间：
+        <input #endTime class="form-box layer-date" id="end" name="end" placeholder="请选择"
+               onclick="laydate({elem: '#end',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+      </span>
+    </span>
+  <button type="button" class="btn btn-sm btn-primary" id="search1"> 搜索</button>
+  <button (click)="goBack()" class="btn btn-sm btn-primary fn-right" >返回</button>
+</div>
+<div id="container" tabindex="0"></div>
+

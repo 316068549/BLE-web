@@ -1,0 +1,74 @@
+
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">系统管理</a>
+    <a  href="javascript:;">报警管理</a>
+    <a  routerLinkActive="active" routerLink="/warn">报警列表</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box col-sm-12 mt15">
+    <div class="col-sm-3">
+      <div class="input-group">
+        <input #searchBox type="text" placeholder="请输入设备ID" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="search(searchBox.value)"> 搜索</button> </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+
+
+      <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            <mfDefaultSorter by="deviceIMEI">设备ID</mfDefaultSorter>
+          </th>
+          <th>
+            位置
+          </th>
+          <th>
+          <mfDefaultSorter by="alarmTime">报警时间</mfDefaultSorter>
+          </th>
+          <th>
+            详情
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let warn of mf.data; let i = index;" [class.selected]="warn === selectedWarn" (click)="onSelect(warn)">
+          <td>{{i+1}}</td>
+          <!--<td>{{electricity.locationType}}</td>-->
+          <td >{{warn.deviceIMEI}}</td>
+          <td>{{warn.alarmIocationType}}({{warn.alarmLongitude}},{{warn.alarmLatitude}})</td>
+          <td >{{warn.alarmTime}}</td>
+          <td>&nbsp;&nbsp;
+            <!--<a [routerLink]="['detail', warn.deviceIMEI]" >查看</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <a (click)="gotoDetail(warn.deviceIMEI,warn.alarmId)" >查看</a>&nbsp;
+            <!--<a (click)="delete(electricity); $event.stopPropagation()">删除</a>-->
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td colspan="6">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+
+
+

@@ -1,0 +1,137 @@
+<div id="page-wrapper" class="animated marg220">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">设备管理</a>
+    <a  routerLinkActive="active" >设备信息</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <div class="input-group">
+      <input #searchBox type="text" placeholder="请输入设备号" class="input-sm form-control"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="search2(searchBox.value)"> 搜索</button> </span>
+    </div>
+    <!--<span class="xt-search">-->
+               <!--<input #searchBox type="text" id="search-box"  class="form-box"-->
+                      <!--placeholder="请输入设备号">-->
+           <!--<button class="btn-blue btns" (click)="search2(searchBox.value)" type="submit">搜索</button>-->
+   <!--</span>-->
+
+    <!--<button (click)="searchParMenu();tjmenu=true; clicked=true;tjmenuform.reset();" class="fn-left btn-blue btns search_btn" type="button">+添加设备</button>-->
+  </div>
+  <div class="clearfix"></div>
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+      <!--<div>-->
+        <!--<ckeditor [(ngModel)]="ckeditorContent" debounce="500" [config]="config">-->
+        <!--</ckeditor>-->
+        <!--输入的内容：<br> {{ ckeditorContent }}-->
+      <!--</div>-->
+      <table class="table">
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            设备号
+          </th>
+          <th>
+            设备使用者
+          </th>
+          <!--<th>-->
+          <!--设备绑定手机号-->
+          <!--</th>-->
+          <th>
+            亲情号
+          </th>
+          <!--<th>-->
+            <!--电子围栏-->
+          <!--</th>-->
+          <!--<th>-->
+            <!--操作-->
+          <!--</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let device of devices; let i = index;"  (click)="onSelect(device)">
+          <td>{{(curPage-1)*10+i+1}}</td>
+          <td >{{device.deviceImei}}</td>
+          <td >{{device.deviceUserName}}</td>
+          <!--<td>{{device.devicePhone}}</td>-->
+          <td>{{device.familyPhones}}</td>
+          <!--<td>{{device.railName}}<span *ngIf="device.railName">：{{device.parameter}}</span><span *ngIf="!device.railName">无</span></td>-->
+          <!--<td>&nbsp;&nbsp;-->
+            <!--<a  (click)="deletemenu=true; clicked=true;device === selectedDevice" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <!--<a (click)="delete(device.deviceImeiCode); $event.stopPropagation()">删除</a>-->
+          <!--</td>-->
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="devices&&!isSearch">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
+                [disabled]="curPage==totalPage">下一页</button>
+      </div>
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+        没有查询到数据
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="tjmenuform.form.valid && add(deviceImeiCode.value,deviceType.options[deviceType.selectedIndex].textContent,deviceType.value);">
+    <div class="operate-title">添加设备<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content pb15">
+      <div class="operate-item fn-clear">
+        <label>设备号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceImeiCode" name="deviceImeiCode" class="form-box"  [(ngModel)]="Device.deviceIMEI" #deviceImeiCode="ngModel">
+          <p *ngIf="tjmenuform.submitted && !deviceImeiCode.valid"   class="text-danger">设备号不能为空</p>
+        </div>
+      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>设备名:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="deviceName" name="deviceName" class="form-box"  [(ngModel)]="Device.deviceName" #deviceName="ngModel">-->
+          <!--<p *ngIf="tjmenuform.submitted && !deviceName.valid"   class="text-danger">设备名不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="operate-item fn-clear">
+        <label>设备类型:</label>
+        <div class="operate-group">
+          <select #deviceType id="deviceType" required name="deviceType"  class="form-select" >
+            <option value="" selected = "selected" >请选择</option>
+            <option *ngFor="let rescueParent of rescueParents" [value]="rescueParent.deivceId" >{{rescueParent.deviceName}}</option>
+          </select>
+          <p *ngIf="tjmenuform.submitted && !deviceType.valid && !deviceType.value"  class="text-danger">设备类型为必选项</p>
+        </div>
+      </div>
+
+
+      <div class="operate-btn mt15">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+

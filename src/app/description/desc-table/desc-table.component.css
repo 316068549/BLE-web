@@ -1,0 +1,17 @@
+.operate {
+  width: 830px;
+  position: fixed;
+  z-index: 200;
+  top: 110px;
+  left: 50%;
+  margin-left: -415px;
+
+}
+.operate .operate-group2 {
+  /* float: left; */
+  width: 450px;
+  display: inline-block;
+}
+.wid696{
+  width:696px !important;
+}

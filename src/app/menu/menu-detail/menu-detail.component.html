@@ -1,0 +1,54 @@
+<div id="page-wrapper" class="animated">
+  <div class="page-t">
+    <div class="page-nav message-nav">
+      <a  href="javascript:;">设备管理</a>
+      <a  href="javascript:;">菜单管理</a>
+      <a  routerLinkActive="active" routerLink="/menu-detail">菜单详情</a>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+  <div class="J_mainContent" id="content-main">
+    <div class="wrapper wrapper-content">
+      <div *ngIf="menu">
+        <!--<h2>{{menu.name}} details!</h2>-->
+        <!--<div><label>id: </label>{{menu.id}}</div>-->
+        <!--<div>-->
+          <!--<label>name: </label>-->
+          <!--<input [(ngModel)]="menu.name" placeholder="name"/>-->
+        <!--</div>-->
+        <table class="table">
+          <thead>
+          <tr>
+            <th>菜单名称</th>
+            <th>菜单编号</th>
+            <th>链接地址</th>
+            <th>上级菜单名称</th>
+            <th>上级菜单编号</th>
+            <th>新窗口打开</th>
+            <!--<th>添加时间</th>-->
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>{{menu.menuTitle}}</td>
+            <td>{{menu.menuNumber}}</td>
+            <td>{{menu.menuLink}}</td>
+            <td>{{menu.menuParentTitle}}</td>
+            <td>{{menu.menuParentNumber}}</td>
+            <td>{{menu.menuNewWindow}}</td>
+            <!--<td>{{menu.addTime}}</td>-->
+            <td><a  href="javascript:;"> 修改</a></td>
+          </tr>
+          </tbody>
+        </table>
+        <div>详情：</div>
+        <div>{{menu.menuRemark}}</div>
+        <button class="btns btn-gray" (click)="goBack()">返回</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+

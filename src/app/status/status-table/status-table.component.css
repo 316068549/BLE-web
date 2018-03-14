@@ -1,0 +1,16 @@
+.btn-group{
+  width:70px;
+}
+.circle{
+  border-radius: 15px;
+  outline: none !important;
+}
+.table{
+  width:70%;
+  float: left;
+}
+.charts-box{
+  width:30%;
+  float: left;
+  padding: 0 15px;
+}
